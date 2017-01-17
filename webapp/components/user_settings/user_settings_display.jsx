@@ -367,7 +367,7 @@ export default class UserSettingsDisplay extends React.Component {
         const showUsername = (
             <FormattedMessage
                 id='user.settings.display.showUsername'
-                defaultMessage='Show username (default)'
+                defaultMessage='Show username'
             />
         );
         const showNickname = (
@@ -463,7 +463,7 @@ export default class UserSettingsDisplay extends React.Component {
                 describe = (
                     <FormattedMessage
                         id='user.settings.display.showUsername'
-                        defaultMessage='Show username (default)'
+                        defaultMessage='Show username'
                     />
                 );
             } else if (this.state.nameFormat === 'full_name') {

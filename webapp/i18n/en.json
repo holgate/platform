@@ -1974,7 +1974,7 @@
   "user.settings.display.preferTime": "Select how you prefer time displayed.",
   "user.settings.display.showFullname": "Show first and last name",
   "user.settings.display.showNickname": "Show nickname if one exists, otherwise show first and last name",
-  "user.settings.display.showUsername": "Show username (default)",
+  "user.settings.display.showUsername": "Show username",
   "user.settings.display.teammateDisplay": "Teammate Name Display",
   "user.settings.display.theme.applyToAllTeams": "Apply new theme to all my teams",
   "user.settings.display.theme.customTheme": "Custom Theme",
