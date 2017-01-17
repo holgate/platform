@@ -964,8 +964,9 @@ export function displayUsername(userId) {
 }
 
 export function displayUsernameForUser(user) {
-    const nameFormat = PreferenceStore.get(Constants.Preferences.CATEGORY_DISPLAY_SETTINGS, 'name_format', 'false');
-
+    //const nameFormat = PreferenceStore.get(Constants.Preferences.CATEGORY_DISPLAY_SETTINGS, 'name_format', 'false');
+    const nameFormat = PreferenceStore.get(Constants.Preferences.CATEGORY_DISPLAY_SETTINGS, 'name_format', 'nickname_full_name'); //#MCHadded
+    
     let username = '';
     if (user) {
         if (nameFormat === Constants.Preferences.DISPLAY_PREFER_NICKNAME) {
