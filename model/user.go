@@ -40,7 +40,6 @@ type User struct {
 	Position           string    `json:"position"`
 	Roles              string    `json:"roles"`
 	AllowMarketing     bool      `json:"allow_marketing,omitempty"`
-	Approved           bool      `json:"approved,omitempty"`
 	Props              StringMap `json:"props,omitempty"`
 	NotifyProps        StringMap `json:"notify_props,omitempty"`
 	LastPasswordUpdate int64     `json:"last_password_update,omitempty"`
@@ -250,7 +249,6 @@ func (u *User) ClearNonProfileFields() {
 	u.MfaSecret = ""
 	u.EmailVerified = false
 	u.AllowMarketing = false
-	u.Approved = false
 	u.Props = StringMap{}
 	u.NotifyProps = StringMap{}
 	u.LastPasswordUpdate = 0

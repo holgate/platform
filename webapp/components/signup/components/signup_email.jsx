@@ -238,8 +238,7 @@ export default class SignupEmail extends React.Component {
                 email: this.refs.email.value.trim(),
                 username: this.refs.name.value.trim().toLowerCase(),
                 password: this.refs.password.value,
-                allow_marketing: true,
-                approved: false
+                allow_marketing: true
             };
 
             Client.createUserWithInvite(user,
