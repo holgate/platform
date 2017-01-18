@@ -48,6 +48,7 @@ var PERMISSION_CREATE_POST *Permission
 var PERMISSION_EDIT_POST *Permission
 var PERMISSION_EDIT_OTHERS_POSTS *Permission
 var PERMISSION_REMOVE_USER_FROM_TEAM *Permission
+var PERMISSION_APPROVE_USER_TO_TEAM *Permission
 var PERMISSION_MANAGE_TEAM *Permission
 var PERMISSION_IMPORT_TEAM *Permission
 
@@ -234,6 +235,11 @@ func InitalizePermissions() {
 		"authentication.permissions.remove_user_from_team.name",
 		"authentication.permissions.remove_user_from_team.description",
 	}
+	PERMISSION_APPROVE_USER_TO_TEAM = &Permission{
+		"update_approved",
+		"authentication.permissions.update_approved.name",
+		"authentication.permissions.update_approved.description",
+	}
 	PERMISSION_MANAGE_TEAM = &Permission{
 		"manage_team",
 		"authentication.permissions.manage_team.name",
@@ -301,6 +307,7 @@ func InitalizeRoles() {
 			PERMISSION_EDIT_OTHERS_POSTS.Id,
 			PERMISSION_ADD_USER_TO_TEAM.Id,
 			PERMISSION_REMOVE_USER_FROM_TEAM.Id,
+			PERMISSION_APPROVE_USER_TO_TEAM.Id,
 			PERMISSION_MANAGE_TEAM.Id,
 			PERMISSION_IMPORT_TEAM.Id,
 			PERMISSION_MANAGE_ROLES.Id,

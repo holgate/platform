@@ -11,7 +11,7 @@ import Constants from 'utils/constants.jsx';
 import * as Utils from 'utils/utils.jsx';
 import * as AsyncClient from 'utils/async_client.jsx';
 import {updateUserRoles, updateActive} from 'actions/user_actions.jsx';
-import {updateTeamMemberRoles} from 'actions/team_actions.jsx';
+import {updateTeamMemberRoles, updateApproved} from 'actions/team_actions.jsx';
 
 import {FormattedMessage} from 'react-intl';
 
@@ -25,6 +25,8 @@ export default class AdminTeamMembersDropdown extends React.Component {
         this.handleRemoveFromTeam = this.handleRemoveFromTeam.bind(this);
         this.handleMakeActive = this.handleMakeActive.bind(this);
         this.handleMakeNotActive = this.handleMakeNotActive.bind(this);
+        this.handleMakeApproved = this.handleMakeApproved.bind(this);
+        this.handleMakeNotApproved = this.handleMakeNotApproved.bind(this);
         this.handleMakeTeamAdmin = this.handleMakeTeamAdmin.bind(this);
         this.handleMakeSystemAdmin = this.handleMakeSystemAdmin.bind(this);
         this.handleResetPassword = this.handleResetPassword.bind(this);
@@ -101,6 +103,40 @@ export default class AdminTeamMembersDropdown extends React.Component {
     handleMakeNotActive(e) {
         e.preventDefault();
         updateActive(this.props.user.id, false, null,
+            (err) => {
+                this.setState({serverError: err.message});
+            }
+        );
+    }
+
+    handleMakeApproved(e) {
+        e.preventDefault();
+        updateApproved(
+            this.props.teamMember.team_id,
+            this.props.user.id,
+            true,
+            () => {
+                /*AsyncClient.getTeamStats(this.props.teamMember.team_id);
+                UserStore.removeProfileFromTeam(this.props.teamMember.team_id, this.props.user.id);
+                UserStore.emitInTeamChange();*/
+            },
+            (err) => {
+                this.setState({serverError: err.message});
+            }
+        );
+    }
+
+    handleMakeNotApproved(e) {
+        e.preventDefault();
+        updateApproved(
+            this.props.teamMember.team_id,
+            this.props.user.id,
+            false,
+            () => {
+                /*AsyncClient.getTeamStats(this.props.teamMember.team_id);
+                UserStore.removeProfileFromTeam(this.props.teamMember.team_id, this.props.user.id);
+                UserStore.emitInTeamChange();*/
+            },
             (err) => {
                 this.setState({serverError: err.message});
             }
@@ -240,6 +276,8 @@ export default class AdminTeamMembersDropdown extends React.Component {
         let showMakeSystemAdmin = !Utils.isSystemAdmin(user.roles);
         let showMakeActive = false;
         let showMakeNotActive = !Utils.isSystemAdmin(user.roles);
+        let showMakeApproved = !Utils.isSystemAdmin(user.roles); //false; //this.props.user.id !== me.id
+        let showMakeNotApproved = !Utils.isSystemAdmin(user.roles); //this.props.user.id !== me.id
         const mfaEnabled = global.window.mm_license.IsLicensed === 'true' && global.window.mm_license.MFA === 'true' && global.window.mm_config.EnableMultifactorAuthentication === 'true';
         const showMfaReset = mfaEnabled && user.mfa_active;
 
@@ -255,6 +293,8 @@ export default class AdminTeamMembersDropdown extends React.Component {
             showMakeSystemAdmin = false;
             showMakeActive = true;
             showMakeNotActive = false;
+            showMakeApproved = true;
+            showMakeNotApproved = false;
         }
 
         let disableActivationToggle = false;
@@ -337,6 +377,44 @@ export default class AdminTeamMembersDropdown extends React.Component {
         let menuClass = '';
         if (disableActivationToggle) {
             menuClass = 'disabled';
+        }
+
+        let makeApproved = null;
+        if (showMakeApproved) {
+            makeApproved = (
+                <li
+                    role='presentation'
+                >
+                    <a
+                        role='menuitem'
+                        href='#'
+                        onClick={this.handleMakeApproved}
+                    >
+                        <FormattedMessage
+                            id='team_members_dropdown.makeApproved'
+                            defaultMessage='Approve'
+                        />
+                    </a>
+                </li>
+            );
+        }
+
+        let makeNotApproved = null;
+        if (showMakeNotApproved) {
+            makeNotApproved = (
+                <li role='presentation'>
+                    <a
+                        role='menuitem'
+                        href='#'
+                        onClick={this.handleMakeNotApproved}
+                    >
+                        <FormattedMessage
+                            id='team_members_dropdown.makeNotApproved'
+                            defaultMessage='Revoke Approval'
+                        />
+                    </a>
+                </li>
+            );
         }
 
         let makeActive = null;
@@ -505,6 +583,8 @@ export default class AdminTeamMembersDropdown extends React.Component {
                     {makeMember}
                     {makeActive}
                     {makeNotActive}
+                    {makeApproved}
+                    {makeNotApproved}
                     {makeSystemAdmin}
                     {mfaReset}
                     {passwordReset}

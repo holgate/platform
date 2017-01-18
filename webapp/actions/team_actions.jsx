@@ -76,6 +76,26 @@ export function removeUserFromTeam(teamId, userId, success, error) {
     );
 }
 
+export function updateApproved(teamId, userId, approved, success, error) {
+    Client.updateApproved(
+        teamId,
+        userId,
+        approved,
+        () => {
+            AsyncClient.getTeamMember(teamId, userId);
+
+            if (success) {
+                success();
+            }
+        },
+        (err) => {
+            if (error) {
+                error(err);
+            }
+        }
+    );
+}
+
 export function updateTeamMemberRoles(teamId, userId, newRoles, success, error) {
     Client.updateTeamMemberRoles(teamId, userId, newRoles,
         () => {

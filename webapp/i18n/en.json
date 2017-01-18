@@ -1866,6 +1866,8 @@
   "team_members_dropdown.confirmDemotionCmd": "platform roles system_admin {username}",
   "team_members_dropdown.inactive": "Inactive",
   "team_members_dropdown.leave_team": "Remove From Team",
+  "team_members_dropdown.makeApproved": "Approve access to Team",
+  "team_members_dropdown.makeNotApproved": "Revoke access to Team",
   "team_members_dropdown.makeActive": "Make Active",
   "team_members_dropdown.makeAdmin": "Make Team Admin",
   "team_members_dropdown.makeInactive": "Make Inactive",

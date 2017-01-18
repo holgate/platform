@@ -818,6 +818,23 @@ export default class Client {
         this.track('api', 'api_users_update_active');
     }
 
+    updateApproved(teamId, userId, approved, success, error) {
+        var data = {};
+        data.user_id = userId;
+        data.approved = String(approved);
+
+        request.
+            post(`${this.getTeamNeededRoute(teamId)}/update_approved`).
+            set(this.defaultHeaders).
+            type('application/json').
+            accept('application/json').
+            send(data).
+            end(this.handleResponse.bind(this, 'updateApproved', success, error));
+
+        this.track('api', 'api_teams_update_approved');
+    }
+
+
     sendPasswordReset(email, success, error) {
         var data = {};
         data.email = email;

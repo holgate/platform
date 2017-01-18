@@ -46,6 +46,7 @@ func InitTeam() {
 
 	BaseRoutes.NeedTeam.Handle("/add_user_to_team", ApiUserRequired(addUserToTeam)).Methods("POST")
 	BaseRoutes.NeedTeam.Handle("/remove_user_from_team", ApiUserRequired(removeUserFromTeam)).Methods("POST")
+	BaseRoutes.NeedTeam.Handle("/update_approved", ApiUserRequired(updateApproved)).Methods("POST")
 
 	// These should be moved to the global admin console
 	BaseRoutes.NeedTeam.Handle("/import_team", ApiUserRequired(importTeam)).Methods("POST")
@@ -397,6 +398,54 @@ func removeUserFromTeam(c *Context, w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Write([]byte(model.MapToJson(params)))
+}
+
+func updateApproved(c *Context, w http.ResponseWriter, r *http.Request) {
+	props := model.MapFromJson(r.Body)
+	userId := props["user_id"]
+
+	if len(userId) != 26 {
+		c.SetInvalidParam("updateApproved", "user_id")
+		return
+	}
+
+	approved := props["approved"] == "true"
+
+	mchan := app.Srv.Store.Team().GetTeamsForUser(userId)
+	teamId := c.TeamId
+
+	var member *model.TeamMember
+	if result := <-mchan; result.Err != nil {
+
+		c.Err = result.Err
+		return
+	} else {
+		members := result.Data.([]*model.TeamMember)
+		for _, m := range members {
+			if m.TeamId == teamId {
+				member = m
+			}
+		}
+	}
+
+	if member == nil {
+		c.Err = model.NewLocAppError("updateApproved", "api.user.update_approved.permissions.app_error", nil, "userId="+userId+" teamId="+teamId)
+		c.Err.StatusCode = http.StatusBadRequest
+		return
+	}
+
+	member.Approved = approved
+
+	if result := <-app.Srv.Store.Team().UpdateMember(member); result.Err != nil {
+		c.Err = result.Err
+		return
+	}
+
+	app.RemoveAllSessionsForUserId(userId)
+
+	rdata := map[string]string{}
+	rdata["status"] = "ok"
+	w.Write([]byte(model.MapToJson(rdata)))
 }
 
 func addUserToTeamFromInvite(c *Context, w http.ResponseWriter, r *http.Request) {

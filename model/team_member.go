@@ -14,6 +14,7 @@ type TeamMember struct {
 	UserId   string `json:"user_id"`
 	Roles    string `json:"roles"`
 	DeleteAt int64  `json:"delete_at"`
+	Approved bool   `json:"approved,omitempty"`
 }
 
 type TeamUnread struct {

@@ -2004,6 +2004,10 @@
     "translation": "The user does not appear to be part of this team."
   },
   {
+    "id": "api.team.approve_user_to_team.missing.app_error",
+    "translation": "The user does not appear to be part of this team."
+  },
+  {
     "id": "api.team.signup_team.email_disabled.app_error",
     "translation": "Team sign-up with email is disabled."
   },
@@ -2561,6 +2565,14 @@
   },
   {
     "id": "api.user.update_active.permissions.app_error",
+    "translation": "You do not have the appropriate permissions"
+  },
+  {
+    "id": "api.user.update_approved.no_deactivate_ldap.app_error",
+    "translation": "You can not modify the approval status of AD/LDAP accounts. Please modify through the AD/LDAP server."
+  },
+  {
+    "id": "api.user.update_approved.permissions.app_error",
     "translation": "You do not have the appropriate permissions"
   },
   {

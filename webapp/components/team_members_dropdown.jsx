@@ -7,7 +7,7 @@ import TeamStore from 'stores/team_store.jsx';
 import UserStore from 'stores/user_store.jsx';
 import ChannelStore from 'stores/channel_store.jsx';
 
-import {removeUserFromTeam, updateTeamMemberRoles} from 'actions/team_actions.jsx';
+import {removeUserFromTeam, updateTeamMemberRoles, updateApproved} from 'actions/team_actions.jsx';
 import {updateActive} from 'actions/user_actions.jsx';
 
 import * as AsyncClient from 'utils/async_client.jsx';
@@ -25,6 +25,8 @@ export default class TeamMembersDropdown extends React.Component {
         this.handleRemoveFromTeam = this.handleRemoveFromTeam.bind(this);
         this.handleMakeActive = this.handleMakeActive.bind(this);
         this.handleMakeNotActive = this.handleMakeNotActive.bind(this);
+        this.handleMakeApproved = this.handleMakeApproved.bind(this);
+        this.handleMakeNotApproved = this.handleMakeNotApproved.bind(this);
         this.handleMakeAdmin = this.handleMakeAdmin.bind(this);
         this.handleDemote = this.handleDemote.bind(this);
         this.handleDemoteSubmit = this.handleDemoteSubmit.bind(this);
@@ -89,6 +91,50 @@ export default class TeamMembersDropdown extends React.Component {
             () => {
                 AsyncClient.getChannelStats(ChannelStore.getCurrentId());
                 AsyncClient.getTeamStats(this.props.teamMember.team_id);
+            },
+            (err) => {
+                this.setState({serverError: err.message});
+            }
+        );
+    }
+
+    handleMakeApproved() {
+        updateApproved(
+            this.props.teamMember.team_id,
+            this.props.user.id,
+            true,
+            () => {
+                /*
+                UserStore.removeProfileFromTeam(this.props.teamMember.team_id, this.props.user.id);
+                UserStore.emitInTeamChange();
+                AsyncClient.getTeamStats(this.props.teamMember.team_id);
+                */
+                
+                AsyncClient.getUser(this.props.user.id);
+                /*AsyncClient.getChannelStats(ChannelStore.getCurrentId());
+                AsyncClient.getTeamStats(this.props.teamMember.team_id);*/
+            },
+            (err) => {
+                this.setState({serverError: err.message});
+            }
+        );
+    }
+
+    handleMakeNotApproved() {
+        updateApproved(
+            this.props.teamMember.team_id,
+            this.props.user.id,
+            false,
+            () => {
+                /*
+                UserStore.removeProfileFromTeam(this.props.teamMember.team_id, this.props.user.id);
+                UserStore.emitInTeamChange();
+                AsyncClient.getTeamStats(this.props.teamMember.team_id);
+                */
+
+                AsyncClient.getUser(this.props.user.id);
+                /*AsyncClient.getChannelStats(ChannelStore.getCurrentId());
+                AsyncClient.getTeamStats(this.props.teamMember.team_id);*/
             },
             (err) => {
                 this.setState({serverError: err.message});
@@ -266,6 +312,42 @@ export default class TeamMembersDropdown extends React.Component {
             );
         }
 
+        let makeApproved = null;
+        if (this.props.user.id !== me.id) { //if (showMakeApproved) {
+            makeApproved = (
+                <li role='presentation'>
+                    <a
+                        role='menuitem'
+                        href='#'
+                        onClick={this.handleMakeApproved}
+                    >
+                        <FormattedMessage
+                            id='team_members_dropdown.makeApproved'
+                            defaultMessage='Approve'
+                        />
+                    </a>
+                </li>
+            );
+        }
+
+        let makeNotApproved = null;
+        if (this.props.user.id !== me.id) { //if (showMakeNotApproved) {
+            makeNotApproved = (
+                <li role='presentation'>
+                    <a
+                        role='menuitem'
+                        href='#'
+                        onClick={this.handleMakeNotApproved}
+                    >
+                        <FormattedMessage
+                            id='team_members_dropdown.makeNotApproved'
+                            defaultMessage='Revoke Approval'
+                        />
+                    </a>
+                </li>
+            );
+        }
+
         const makeActive = null;
         if (showMakeActive) {
             // makeActive = (
@@ -349,7 +431,7 @@ export default class TeamMembersDropdown extends React.Component {
             );
         }
 
-        if (!removeFromTeam && !makeAdmin && !makeMember && !makeActive && !makeNotActive) {
+        if (!removeFromTeam && !makeAdmin && !makeMember && !makeActive && !makeNotActive && !makeApproved && !makeNotApproved) {
             return <div>{currentRoles}</div>;
         }
 
@@ -374,6 +456,8 @@ export default class TeamMembersDropdown extends React.Component {
                     {makeMember}
                     {makeActive}
                     {makeNotActive}
+                    {makeApproved}
+                    {makeNotApproved}
                 </ul>
                 {makeDemoteModal}
                 {serverError}
